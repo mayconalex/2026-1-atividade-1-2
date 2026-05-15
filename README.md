@@ -10,7 +10,8 @@
   
 ---
 
-## Grupos
+## Linguagens e Grupos
+[Informações sobres as linguagenes](/linguagens.md).
 
 | Linguagens | Integrantes |
 | ---------- | ----------- |
