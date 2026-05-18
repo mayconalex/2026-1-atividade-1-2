@@ -1,9 +1,20 @@
 import os
 import socket
+import threading
 
 
-HOST = "0.0.0.0"
+HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "5000"))
+
+
+def handle_client(conn: socket.socket, addr: tuple[str, int]) -> None:
+    with conn:
+        print(f"[echo-server] Conexão de {addr}")
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            conn.sendall(data)
 
 
 def main() -> None:
@@ -15,13 +26,8 @@ def main() -> None:
 
         while True:
             conn, addr = sock.accept()
-            with conn:
-                print(f"[echo-server] Conexão de {addr}")
-                while True:
-                    data = conn.recv(1024)
-                    if not data:
-                        break
-                    conn.sendall(data)
+            thread = threading.Thread(target=handle_client, args=(conn, addr), daemon=True)
+            thread.start()
 
 
 if __name__ == "__main__":

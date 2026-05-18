@@ -29,7 +29,7 @@ docker-compose-echo-python/
 No diretório raiz do repositório:
 
 ```bash
-cd /home/runner/work/2026-1-atividade-1-2/2026-1-atividade-1-2/docker-compose-echo-python
+cd docker-compose-echo-python
 docker compose up --build
 ```
 
