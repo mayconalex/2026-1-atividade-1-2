@@ -7,13 +7,15 @@ HOST = os.getenv("ECHO_HOST", "echo-server")
 PORT = int(os.getenv("ECHO_PORT", "5000"))
 MESSAGE = os.getenv("ECHO_MESSAGE", "Olá do cliente echo!")
 BUFFER_SIZE = 1024
+MAX_CONNECTION_ATTEMPTS = 15
+CONNECTION_TIMEOUT_SECONDS = 5
 
 
 def main() -> None:
-    max_attempts = 15
+    max_attempts = MAX_CONNECTION_ATTEMPTS
     for attempt in range(1, max_attempts + 1):
         try:
-            with socket.create_connection((HOST, PORT), timeout=5) as sock:
+            with socket.create_connection((HOST, PORT), timeout=CONNECTION_TIMEOUT_SECONDS) as sock:
                 print(f"[echo-client] Conectado em {HOST}:{PORT}")
                 sock.sendall(MESSAGE.encode("utf-8"))
                 sock.shutdown(socket.SHUT_WR)

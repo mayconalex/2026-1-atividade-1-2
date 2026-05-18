@@ -14,6 +14,7 @@ def handle_client(conn: socket.socket, addr: tuple[str, int]) -> None:
         while True:
             data = conn.recv(BUFFER_SIZE)
             if not data:
+                print(f"[echo-server] Conexão encerrada por {addr}")
                 break
             conn.sendall(data)
 
