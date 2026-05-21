@@ -12,6 +12,8 @@ Na raiz do projeto, execute os comandos abaixo:
 docker compose up -d servidor
 ```
 
+_(Para acompanhar os logs do servidor, execute `docker compose logs -f servidor` em outro terminal)_.
+
 **2. Iniciar os clientes** (abra vários terminais e rode o comando abaixo em cada um para testar a concorrência):
 
 ```bash
