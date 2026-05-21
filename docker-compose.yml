@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+    servidor:
+        build:
+            context: ./servidor
+        ports:
+            - "5000:5000"
+        networks:
+            - rede_echo
+
+    cliente:
+        build:
+            context: ./cliente
+        environment:
+            # O Deno resolverá este nome dinamicamente usando o DNS interno do Docker
+            SERVER_HOST: "servidor"
+        networks:
+            - rede_echo
+        # Configurações essenciais para evitar que o container do cliente feche
+        # e permitir a entrada interativa de dados no terminal (o comando 'prompt')
+        stdin_open: true
+        tty: true
+
+networks:
+    rede_echo:
+        driver: bridge
