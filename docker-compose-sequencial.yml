@@ -1,0 +1,16 @@
+services:
+  servidor:
+    build: ./servidor
+    # Roda a versão sequencial
+    command: run --allow-net sequencial.ts
+    ports:
+      - "5000:5000"
+
+  cliente:
+    build: ./cliente
+    environment:
+      SERVER_HOST: "servidor"
+    depends_on:
+      - servidor
+    deploy:
+      replicas: 10
