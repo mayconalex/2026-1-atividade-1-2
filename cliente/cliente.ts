@@ -17,8 +17,8 @@ try {
         console.log(`Servidor respondeu: ${resposta}`);
     }
 
-    // Retém a conexão aberta por 3 segundos para teste de concorrência
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // Retém a conexão aberta por 2 segundos para teste de concorrência
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 } catch (erro) {
     console.error(`Erro:`, erro);
 } finally {
