@@ -1,31 +1,49 @@
-# Atividade 1.2: Servidor Echo Concorrente em TypeScript
+# Atividade 1.2: Servidor Echo em TypeScript (Sequencial vs. Concorrente)
 
-Implementação de um Cliente/Servidor TCP concorrente em TypeScript (Deno) rodando via Docker.
+Comparativo de um modelo Cliente/Servidor TCP em TypeScript (Deno) rodando via Docker. O projeto demonstra a diferença prática entre o bloqueio de fluxo (sequencial) e o uso do Event Loop para I/O assíncrono (concorrente).
 
-## Como executar
+## Como executar os testes
 
-Na raiz do projeto, execute os comandos abaixo:
+O ambiente subirá 1 servidor e 10 réplicas de clientes autônomos simultaneamente. Na raiz do projeto, execute os passos abaixo:
 
-**1. Iniciar o servidor** (em segundo plano):
+### 1. Teste do Modelo Sequencial (Sem "Thread")
 
-```bash
-docker compose up -d servidor
-```
+Neste modelo, o servidor processa um cliente por vez. Os demais aguardam em uma fila do Sistema Operacional.
 
-_(Para acompanhar os logs do servidor, execute `docker compose logs -f servidor` em outro terminal)_.
+-   **Subir o container:**
+    ```bash
+    docker compose -f docker-compose-sequencial.yml up --build -d
+    ```
+-   **Acompanhar os logs:**
+    ```bash
+    docker compose -f docker-compose-sequencial.yml logs -f servidor
+    ```
+    _(Observe que o servidor atende um cliente a cada 2 segundos)._
+-   **Encerrar o container:**
+    ```bash
+    docker compose -f docker-compose-sequencial.yml down
+    ```
 
-**2. Iniciar os clientes** (abra vários terminais e rode o comando abaixo em cada um para testar a concorrência):
+### 2. Teste do Modelo Concorrente (Com "Thread")
 
-```bash
-docker compose run cliente
-```
+Neste modelo, o servidor aceita e processa todos os clientes instantaneamente através do Event Loop.
 
-**3. Encerrar a aplicação**:
+-   **Subir o container:**
+    ```bash
+    docker compose -f docker-compose-concorrente.yml up --build -d
+    ```
+-   **Acompanhar os logs:**
+    ```bash
+    docker compose -f docker-compose-concorrente.yml logs -f servidor
+    ```
+    _(Observe que o servidor aceita todos os 10 clientes simultaneamente)._
+-   **Encerrar o container:**
+    ```bash
+    docker compose -f docker-compose-concorrente.yml down
+    ```
 
-```bash
-docker compose down
-```
+## Sobre a Concorrência e Implementação
 
-## Sobre a Concorrência
+A transição do modelo sequencial para o concorrente em TypeScript exige a remoção de apenas uma diretiva (`await`) na chamada da rotina de conexão.
 
-O servidor atende múltiplos clientes simultaneamente em uma única thread (_Event Loop_). O uso de `async/await` garante que operações de rede (I/O) não bloqueiem a execução. Com isso, não é necessário criar múltiplas threads no Sistema Operacional, o que elimina o custo computacional de realizar trocas de contexto (_context switches_) para cada conexão.
+Ao delegar o atendimento ao **Event Loop** sem bloquear o fluxo principal, o uso de `async/await` garante que operações de rede (_I/O-bound_) sejam processadas em segundo plano. Com isso, não é necessário criar múltiplas threads no Sistema Operacional (evitando o modelo multithread 1:1), o que elimina o alto custo computacional de realizar trocas de contexto (_context switches_) no escalonador para cada nova conexão.
